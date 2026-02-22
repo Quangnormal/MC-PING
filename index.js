@@ -29,7 +29,7 @@ function tcpPing() {
   socket.on('timeout', () => socket.destroy())
 }
 
-setInterval(tcpPing, 60000)
+setInterval(tcpPing, 300000)
 
 // ===== MINECRAFT BOT =====
 function startBot() {
@@ -61,3 +61,4 @@ function startBot() {
 
 
 startBot()
+
