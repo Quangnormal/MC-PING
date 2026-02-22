@@ -36,7 +36,7 @@ function startBot() {
   const bot = mc.createClient({
     host: HOST,
     port: MC_PORT,
-    username: 'AFK_Player',
+    username: 'PING_BOT',
     version: false
   })
 
@@ -58,5 +58,6 @@ function startBot() {
 
   bot.on('error', err => console.log('❌', err.message))
 }
+
 
 startBot()
