@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: mc-afk-bot
+    env: node
+    plan: free
+    buildCommand: "npm install"
+    startCommand: "node index.js"
+    autoDeploy: true
+    envVars:
+      - key: MC_HOST
+        value: asrixvantage.falix.pro
+      - key: MC_PORT
+        value: 25565

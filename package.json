@@ -1,0 +1,10 @@
+{
+  "name": "mc-afk-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^4.18.2",
+    "minecraft-protocol": "^1.47.0"
+  }
+}
