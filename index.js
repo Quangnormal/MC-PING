@@ -32,6 +32,9 @@ function tcpPing() {
 setInterval(tcpPing, 300000)
 
 // ===== MINECRAFT BOT =====
+let manualDisconnect = false
+let disconnectTimer = null
+
 function startBot() {
   const bot = mc.createClient({
     host: HOST,
@@ -40,25 +43,43 @@ function startBot() {
     version: false
   })
 
-  bot.on('login', () => console.log('✅ Bot joined'))
+  bot.on('login', () => {
+    console.log('✅ Bot joined')
 
-  bot.on('spawn', () => {
-    console.log('🎮 Spawned')
+    // Huỷ timer cũ nếu có (đề phòng trường hợp login lại trước khi timer chạy)
+    if (disconnectTimer) clearTimeout(disconnectTimer)
 
-    setInterval(() => {
-      bot.write('arm_animation', { hand: 0 })
-      console.log('🤖 Activity ping')
-    }, 240000)
+    // Ngắt kết nối sau 2-5 giây
+    const delay = Math.floor(Math.random() * 3000) + 2000 // 2000-5000 ms
+    disconnectTimer = setTimeout(() => {
+      manualDisconnect = true
+      bot.end('Disconnecting after join')
+    }, delay)
   })
 
-  bot.on('end', () => {
-    console.log('⚠ Reconnecting...')
-    setTimeout(startBot, 5000)
+  bot.on('end', (reason) => {
+    console.log('🔌 Bot disconnected:', reason || 'unknown reason')
+
+    // Huỷ timer phòng khi end xảy ra trước khi timer kịp chạy
+    if (disconnectTimer) {
+      clearTimeout(disconnectTimer)
+      disconnectTimer = null
+    }
+
+    if (manualDisconnect) {
+      console.log('⏳ Manual disconnect – waiting 5 minutes before next join')
+      manualDisconnect = false
+      setTimeout(startBot, 5 * 60 * 1000) // 5 phút
+    } else {
+      console.log('⚠️ Connection lost – reconnecting in 5 seconds')
+      setTimeout(startBot, 5000)
+    }
   })
 
-  bot.on('error', err => console.log('❌', err.message))
+  bot.on('error', err => {
+    console.log('❌', err.message)
+    // 'end' sẽ tự động được gọi sau error
+  })
 }
 
-
 startBot()
-
